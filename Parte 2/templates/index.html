@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+        <meta charset="UTF-8">
+        <title>MEDICION DE DATOS AMBIENTALES</title>
+
+    </head>
+    <body bgcolor="#E1FFC8">
+        <h1>Datos de Medicion </h1>
+        <div style="width: 1000px; height: 1000px;" >
+            
+            <div id="Mapa" style="height: 500px; width: 800px;"></div>
+            <div id="MP" style="height: 500px; width: 800px;"></div>
+            <div style="width: 200px; height: 50px;">
+                <footer>
+                    Created by Josué Rivas
+                </footer>
+            </div>
+        </div>
+        <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+        <script type="text/javascript" src="../static/jquery-3.4.1.min.js"></script>
+        <script>
+
+            var estacion = [
+                {A01:[],A25:[],A10:[]},
+                {A01:[],A25:[],A10:[]},
+                {A01:[],A25:[],A10:[]},
+                {A01:[],A25:[],A10:[]},
+                {A01:[],A25:[],A10:[]}
+            ]
+
+            const intervalos = 1000 * 3;
+            var cordenadasX = 0;
+
+
+
+            function A_grafica(data){
+                for(var i = 0;i<1;i++){
+                    estacion[0].A01.push({x:cordenadasX,y:data[0][0]});
+                    estacion[1].A01.push({x:cordenadasX,y:data[0][1]});
+                    estacion[2].A01.push({x:cordenadasX,y:data[0][2]});
+                    estacion[3].A01.push({x:cordenadasX,y:data[0][3]});
+                    estacion[4].A01.push({x:cordenadasX,y:data[0][4]});
+                    estacion[0].A25.push({x:cordenadasX,y:data[1][0]});
+                    estacion[1].A25.push({x:cordenadasX,y:data[1][1]});
+                    estacion[2].A25.push({x:cordenadasX,y:data[1][2]});
+                    estacion[3].A25.push({x:cordenadasX,y:data[1][3]});
+                    estacion[4].A25.push({x:cordenadasX,y:data[1][4]});
+                    estacion[0].A10.push({x:cordenadasX,y:data[2][0]});
+                    estacion[1].A10.push({x:cordenadasX,y:data[2][1]});
+                    estacion[2].A10.push({x:cordenadasX,y:data[2][2]});
+                    estacion[3].A10.push({x:cordenadasX,y:data[2][3]});
+                    estacion[4].A10.push({x:cordenadasX,y:data[2][4]}); 
+                    
+                    cordenadasX = cordenadasX+1;
+                }
+            }
+
+
+
+            function grafica(data_mp1,data_mp25,data_mp10,nombre){
+                var grafico_mp = new CanvasJS.Chart("MP", {
+                exportEnabled: false,
+                title: {text:nombre},
+                
+                axisX: {title: "mediciones"},
+
+                axisY: {title: "material particulado",suffix: "ug/mp3", includeZero:false},
+
+                legend: {horizontalAling: "center",verticalAling: "top", fontsize: 15},
+
+                data: [{type: "line",showInLegend:true, legendText:"MP 1.0 ug/mp3",
+                        dataPoints:data_mp1,color: ['blue']},
+                
+                        {type:"line",showInLegend:true, legendText:"MP 2.5 ug/mp3",
+                        dataPoints:data_mp25,color: ['green']},
+
+                        {type:"line",showInLegend:true, legendText:"MP 10 ug/mp3",
+                        dataPoints:data_mp10,color: ['red']}
+                    
+                ]
+                });
+
+            grafico_mp.render();
+            }
+
+
+
+            var estacion_1 = {label:"Estación Material Particulado #1",coordenadas:[-38.91672,-72.03337]};
+            var estacion_2 = {label:"Estación Material Particulado #2",coordenadas:[-38.95000,-72.02976]};
+            var estacion_3 = {label:"Estación Material Particulado #3",coordenadas:[-38.94256,-72.04732]};
+            var estacion_4 = {label:"Estación Material Particulado #4",coordenadas:[-38.94313,-72.01879]};
+            var estacion_5 = {label:"Estación Material Particulado #5",coordenadas:[-38.93413,-72.06487]};
+
+
+
+            var icono = L.icon({
+                    iconUrl: 'https://lh3.googleusercontent.com/114RC32x6xsq8WjrY5r1d-oxcSx7mgTwgsIB-kEoRRV7Y3-MMhaVfTVRpxheO5vGYjvg7fc=s29',
+                    iconSize: [30,30],
+                });
+
+
+
+
+            var map = L.map('Mapa').setView([-38.93648,-72.02933], 12);
+            
+
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright%22%3EOpenStreetMap</a> contributors'
+                }).addTo(map);
+
+
+
+            var bromas = L.popup();
+            
+
+
+            function hola(elec){
+                bromas.setLatLng(elec.latlng)
+                if(elec.latlng.lat == estacion_1.coordenadas[0] && elec.latlng.lng == estacion_1.coordenadas[1]){
+                    grafica(estacion[0].A01,estacion[0].A25,estacion[0].A10,estacion_1.label);
+                }
+                if(elec.latlng.lat == estacion_2.coordenadas[0] && elec.latlng.lng == estacion_2.coordenadas[1]){
+                    grafica(estacion[1].A01,estacion[1].A25,estacion[1].A10,estacion_2.label);
+                }
+                if(elec.latlng.lat == estacion_3.coordenadas[0] && elec.latlng.lng == estacion_3.coordenadas[1]){
+                    grafica(estacion[2].A01,estacion[2].A25,estacion[2].A10,estacion_3.label);
+                }
+                if(elec.latlng.lat == estacion_4.coordenadas[0] && elec.latlng.lng == estacion_4.coordenadas[1]){
+                    grafica(estacion[3].A01,estacion[3].A25,estacion[3].A10,estacion_4.label);
+                }
+                if(elec.latlng.lat == estacion_5.coordenadas[0] && elec.latlng.lng == estacion_5.coordenadas[1]){
+                    grafica(estacion[4].A01,estacion[4].A25,estacion[4].A10,estacion_5.label);
+                }
+            }
+
+
+
+
+
+            function GetJson(){
+                $.getJSON("http://127.0.0.1:5000/GetData", function(data){
+                    A_grafica(data);
+                    });
+                };
+
+
+                
+            function Sample() {
+                    GetJson();
+                };
+            
+            
+
+            L.marker(estacion_1.coordenadas,{icon:icono}).addTo(map).bindPopup(estacion_1.label).on("click",hola);
+            L.marker(estacion_2.coordenadas,{icon:icono}).addTo(map).bindPopup(estacion_2.label).on("click",hola);
+            L.marker(estacion_3.coordenadas,{icon:icono}).addTo(map).bindPopup(estacion_3.label).on("click",hola);
+            L.marker(estacion_4.coordenadas,{icon:icono}).addTo(map).bindPopup(estacion_4.label).on("click",hola);
+            L.marker(estacion_5.coordenadas,{icon:icono}).addTo(map).bindPopup(estacion_5.label).on("click",hola);
+
+            setInterval(Sample,intervalos);
+        </script>
+
+
+    </body>
+
+</html>

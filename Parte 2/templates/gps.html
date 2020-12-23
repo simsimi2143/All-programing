@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <!--Inicializamos las librerias que se van a utilizar para el desarrollo del ejercico-->
+        <title>Rastreo vehicular</title>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin=""/>
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    </head>
+
+    <body>
+        <!--Asignamos contenedores para nuestro mapa y para los botenes que podremos
+        accionar para visualizar el recorrido del automobile ya asignamos ID's para 
+        hacer reconocimiento de estos-->
+        <div style="width: 1000px; text-align: center;border: black 2px solid;">
+            <div style="background-color:red ; border:black 2px solid">
+                <p>Monitoreo de vehiculos</p>
+            </div>
+            <div id="map" style="height: 500px"></div>
+            </div>
+            <div style="border:black 2px solid; width: 1000px; text-align: center;" id="graficaMP">
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt1">1</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt2">2</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt3">3</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt4">4</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt5">5</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt6">6</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt7">7</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt8">8</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt9">9</button>
+                <button style="background-color: #2f98aa; ; color: #ffffff;border-radius: 6px" id="bt10">10</button>
+            </div>
+            <!--cargamos jQuery-->
+            <script text="text/javascript" src="/static/jquery-3.4.1.min.js"></script>
+        <script>
+            /*Cremos el mapa y lo ubicamos segun corresponda*/
+            var map = L.map('map').setView([-38.73648,-72.62933], 12);
+            /*generamos variable para utilizarlas como contenedores de datos*/
+            var gp_1,gp_2,gp_3,gp_4,gp_5,gp_6,gp_7,gp_8,gp_9,gp_10;
+            /* creamos unas funcion para almacenar las coordenas de las rutas 
+            realizadas por cada auto*/
+            function ruta(data){
+                gp_1 = data[1];gp_2 = data[2];gp_3 = data[3];
+                gp_4 = data[4];gp_5 = data[5];gp_6 = data[6];
+                gp_7 = data[7];gp_8 = data[8];gp_9 = data[9];
+                gp_10 = data[10];
+            };
+            /*Para el correcto funcionamiento de lealeft, damos publicidad gratis por medio del
+            uso del siguiente layer*/
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            /*esta funcion se encarga de recepcionar y alamcenar los datos provenientes de la dirección
+            asignada por el servidor de flask*/
+            function GetJson(){
+                $.getJSON("http://127.0.0.1:5000/GetData", function(data){
+                ruta(data);
+                console.log(gp_1);
+                });
+            };
+            /*Llamamos a la función GetJson para obtener y alamacenar todos los datos entregados
+            por el Flask server*/
+            GetJson();
+            /*Usando JQuery instaciamos el evento onclick para dibujar una linea generada por polyline
+            esta linea se vera dibujada en el mapa como la ruta quie siguio el automobil, cada boton 
+            reacciona diferente al momento de dibujar ya que dibuja los datos en dependencia del arreglo
+            de datos asignados*/
+            $("#bt1").click(function(){var poli = L.polyline(gp_1,{color:"red"}).addTo(map);})
+            $("#bt2").click(function(){var poli = L.polyline(gp_2,{color:"blue"}).addTo(map);})
+            $("#bt3").click(function(){var poli = L.polyline(gp_3,{color:"yellow"}).addTo(map);})
+            $("#bt4").click(function(){var poli = L.polyline(gp_4,{color:"black"}).addTo(map);})
+            $("#bt5").click(function(){var poli = L.polyline(gp_5,{color:"orange"}).addTo(map);})
+            $("#bt6").click(function(){var poli = L.polyline(gp_6,{color:"green"}).addTo(map);})
+            $("#bt7").click(function(){var poli = L.polyline(gp_7,{color:"brown"}).addTo(map);})
+            $("#bt8").click(function(){var poli = L.polyline(gp_8,{color:"cyan"}).addTo(map);})
+            $("#bt9").click(function(){var poli = L.polyline(gp_9,{color:"chartreuse"}).addTo(map);})
+            $("#bt10").click(function(){var poli = L.polyline(gp_10,{color:"blueviolet"}).addTo(map);})
+            
+        </script>
+        
+    </body>
+</html>
